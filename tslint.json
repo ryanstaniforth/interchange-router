@@ -1,0 +1,20 @@
+{
+    "extends": ["tslint:recommended", "tslint-config-prettier"],
+    "rules": {
+        "no-import-side-effect": false,
+        "typedef": false,
+        "completed-docs": false,
+        "file-name-casing": [false],
+        "member-ordering": [
+            true,
+            {
+                "order": "statics-first"
+            }
+        ],
+        "prefer-function-over-method": false,
+        "no-magic-numbers": false,
+        "interface-name": [true, "never-prefix"],
+        "object-literal-sort-keys": false,
+        "variable-name": [true, "ban-keywords", "check-format", "allow-pascal-case"]
+    }
+}
