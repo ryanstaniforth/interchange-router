@@ -1,7 +1,10 @@
 import { IncomingMessage, ServerResponse } from 'http';
 import { parse as parseUrl } from 'url';
 import { Router } from '../Router';
-import { Response } from '../types';
+
+const INTERNAL_ERROR_MESSAGE = JSON.stringify({
+    message: 'Internal error.',
+});
 
 export class HttpTransformer {
     public constructor(private router: Router) {
@@ -14,14 +17,16 @@ export class HttpTransformer {
         const body = await this.getRequestJson(req);
 
         if (path === undefined) {
-            res.write(JSON.stringify(this.createResponse(500, '')));
+            res.statusCode = 500;
+            res.write(INTERNAL_ERROR_MESSAGE);
             res.end();
 
             return;
         }
 
         if (method === undefined) {
-            res.write(JSON.stringify(this.createResponse(500, '')));
+            res.statusCode = 500;
+            res.write(INTERNAL_ERROR_MESSAGE);
             res.end();
 
             return;
@@ -34,7 +39,20 @@ export class HttpTransformer {
         });
 
         res.statusCode = response.statusCode;
-        res.write(JSON.stringify(response.body));
+
+        if (response.body === undefined) {
+            res.write('');
+        } else {
+            const bodyString = JSON.stringify(response.body);
+
+            if (typeof bodyString !== 'string') {
+                res.statusCode = 500;
+                res.write(INTERNAL_ERROR_MESSAGE);
+            }
+
+            res.write(bodyString);
+        }
+
         res.end();
     }
 
@@ -72,14 +90,5 @@ export class HttpTransformer {
                 resolve(json);
             });
         });
-    }
-
-    private createResponse(statusCode: number, message: string): Response {
-        return {
-            statusCode,
-            body: {
-                message,
-            },
-        };
     }
 }

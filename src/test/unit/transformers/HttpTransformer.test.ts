@@ -47,6 +47,33 @@ describe('HttpTransformer', () => {
             transformer.requestListener(req as any, res as any);
         });
 
+        it('should handle an undefined body', (done) => {
+            router.route.mockImplementation(async () => {
+                return {
+                    statusCode: 200,
+                    body: undefined,
+                };
+            });
+
+            const req = new IncommingMessageMock('GET', '/a', '');
+            const res = new ServerResponseMock();
+
+            res.on('finish', () => {
+                expect(router.route).toBeCalledWith({
+                    method: 'GET',
+                    path: '/a',
+                    body: undefined,
+                });
+
+                expect(res.statusCode).toBe(200);
+                expect(res.body).toEqual('');
+
+                done();
+            });
+
+            transformer.requestListener(req as any, res as any);
+        });
+
         it('should pass JSON request body onto router', (done) => {
             router.route.mockImplementation(async () => {
                 return {
