@@ -1,3 +1,4 @@
+import { InvalidRequestBodyError } from '../../errors';
 import { Handler } from '../../Handler';
 import { Request } from '../../Request';
 import { Router } from '../../Router';
@@ -70,6 +71,26 @@ describe('Router', () => {
                         body: undefined,
                     }),
                 ).toEqual(response);
+            });
+
+            it('should handle invalid request body', async () => {
+                handler.isMatching.mockReturnValue(true);
+                handler.handleRequest.mockImplementation(async () => {
+                    throw new InvalidRequestBodyError('');
+                });
+
+                expect(
+                    await router.route({
+                        method: 'POST',
+                        path: '/path',
+                        body: undefined,
+                    }),
+                ).toEqual({
+                    statusCode: 400,
+                    body: {
+                        message: 'Invalid request.',
+                    },
+                });
             });
 
             it('should handle unexpected errors', async () => {

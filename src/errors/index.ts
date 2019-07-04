@@ -1,4 +1,5 @@
 import { HandlerNotFoundError } from './HandlerNotFoundError';
+import { InvalidRequestBodyError } from './InvalidRequestBodyError';
 import { InvalidUrlPathError } from './InvalidUrlPathError';
 import { MethodNotSupportedError } from './MethodNotSupportedError';
 import { PathNotMatchingError } from './PathNotMatchingError';
@@ -8,6 +9,7 @@ import { PathParameterValidationError } from './PathParameterValidationError';
 
 export {
     HandlerNotFoundError,
+    InvalidRequestBodyError,
     InvalidUrlPathError,
     MethodNotSupportedError,
     PathNotMatchingError,

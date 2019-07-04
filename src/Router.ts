@@ -1,4 +1,4 @@
-import { HandlerNotFoundError, MethodNotSupportedError } from './errors';
+import { HandlerNotFoundError, InvalidRequestBodyError, MethodNotSupportedError } from './errors';
 import { Handler } from './Handler';
 import { Request } from './Request';
 import { isMethod, RawRequest, Response } from './types';
@@ -39,6 +39,13 @@ export class Router {
                     statusCode: 404,
                     body: {
                         message: 'Not found.',
+                    },
+                };
+            } else if (error instanceof InvalidRequestBodyError) {
+                return {
+                    statusCode: 400,
+                    body: {
+                        message: 'Invalid request.',
                     },
                 };
             }
