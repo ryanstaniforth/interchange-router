@@ -1,3 +1,4 @@
+import { PathNotMatchingError } from '../../errors';
 import { Handler } from '../../Handler';
 import { MatchableRoute } from '../../MatchableRoute';
 import { Request } from '../../Request';
@@ -5,50 +6,73 @@ import { Response } from '../../types';
 import { UrlPathComponents } from '../../UrlPathComponents';
 
 describe('Handler', () => {
-    it('', async () => {
-        const matchablePath = new MatchableRoute('GET', '/a/:b', {
-            b: (value) => value,
-        });
+    const matchablePath = new MatchableRoute('GET', '/a/:b', {
+        b: (value) => value,
+    });
 
-        const handler = new Handler(
-            matchablePath,
-            (): Response => {
-                return {
-                    statusCode: 200,
-                    body: {
-                        success: true,
-                    },
-                };
-            },
-        );
+    const handler = new Handler(
+        matchablePath,
+        (): Response => {
+            return {
+                statusCode: 200,
+                body: {
+                    success: true,
+                },
+            };
+        },
+    );
 
-        const request1 = new Request('GET', 'http://a/1', {});
-        const path1 = new UrlPathComponents('/a/1');
+    const asyncHandler = new Handler(
+        matchablePath,
+        async (): Promise<Response> => {
+            return {
+                statusCode: 200,
+                body: {
+                    success: true,
+                },
+            };
+        },
+    );
 
-        const request2 = new Request('POST', 'http://a/1', {});
-        const path2 = new UrlPathComponents('/a/1');
+    it('should match and handle request', async () => {
+        const request = new Request('GET', 'http://a/1', {});
+        const path = new UrlPathComponents('/a/1');
 
-        const request3 = new Request('GET', 'http://a/1', {});
-        const path3 = new UrlPathComponents('/a/1');
-
-        expect(handler.isMatching(request1, path1)).toBe(true);
-        expect(await handler.handleRequest(request1, path1)).toEqual({
+        expect(handler.isMatching(request, path)).toBe(true);
+        expect(await handler.handleRequest(request, path)).toEqual({
             statusCode: 200,
             body: {
                 success: true,
             },
         });
+    });
 
-        expect(handler.isMatching(request2, path2)).toBe(false);
-        expect(await handler.handleRequest(request2, path2)).toEqual({
+    it('should not match but still handle request', async () => {
+        const request = new Request('POST', 'http://a/1', {});
+        const path = new UrlPathComponents('/a/1');
+
+        expect(handler.isMatching(request, path)).toBe(false);
+        expect(await handler.handleRequest(request, path)).toEqual({
             statusCode: 200,
             body: {
                 success: true,
             },
         });
+    });
 
-        expect(handler.isMatching(request3, path3)).toBe(true);
-        expect(await handler.handleRequest(request3, path3)).toEqual({
+    it('should not match or handle request', async () => {
+        const request = new Request('GET', 'http://b/1', {});
+        const path = new UrlPathComponents('/b/1');
+
+        expect(handler.isMatching(request, path)).toBe(false);
+        expect(handler.handleRequest(request, path)).rejects.toBeInstanceOf(PathNotMatchingError);
+    });
+
+    it('should await an async function', async () => {
+        const request = new Request('GET', 'http://a/1', {});
+        const path = new UrlPathComponents('/a/1');
+
+        expect(await asyncHandler.handleRequest(request, path)).toEqual({
             statusCode: 200,
             body: {
                 success: true,

@@ -9,7 +9,7 @@ export class Handler<Validators extends { [key: string]: PathParameterValidator 
         private handle: (
             request: Request,
             parameters: { [K in keyof Validators]: ReturnType<Validators[K]> },
-        ) => Response,
+        ) => Response | Promise<Response>,
     ) {}
 
     public isMatching(request: Request, path: UrlPathComponents): boolean {
