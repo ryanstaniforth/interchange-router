@@ -1,4 +1,5 @@
 import { ALBEvent, ALBResult, Callback, Context } from 'aws-lambda';
+import * as http from 'http';
 import { Router } from '../Router';
 
 export class LambdaTransformer {
@@ -40,7 +41,7 @@ export class LambdaTransformer {
 
         return {
             statusCode: response.statusCode,
-            statusDescription: '', // TODO
+            statusDescription: http.STATUS_CODES[response.statusCode] || '',
             body: response.body === undefined ? '' : JSON.stringify(response.body),
             isBase64Encoded: false,
         };

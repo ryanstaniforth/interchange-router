@@ -47,7 +47,7 @@ describe('LambdaTransformer', () => {
 
             expect(transformer.asyncHandler(event, {} as any, {} as any)).resolves.toEqual({
                 statusCode: 200,
-                statusDescription: '',
+                statusDescription: 'OK',
                 body: JSON.stringify(responseBody),
                 isBase64Encoded: false,
             });
