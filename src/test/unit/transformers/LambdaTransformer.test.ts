@@ -49,6 +49,9 @@ describe('LambdaTransformer', () => {
                 statusCode: 200,
                 statusDescription: 'OK',
                 body: JSON.stringify(responseBody),
+                headers: {
+                    'Content-Type': 'application/json'
+                },
                 isBase64Encoded: false,
             });
 

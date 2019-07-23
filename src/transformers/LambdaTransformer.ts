@@ -42,6 +42,9 @@ export class LambdaTransformer {
         return {
             statusCode: response.statusCode,
             statusDescription: http.STATUS_CODES[response.statusCode] || '',
+            headers: {
+                'Content-Type': 'application/json',
+            },
             body: response.body === undefined ? '' : JSON.stringify(response.body),
             isBase64Encoded: false,
         };
