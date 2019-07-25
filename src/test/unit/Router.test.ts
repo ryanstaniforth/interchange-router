@@ -212,5 +212,5 @@ describe('Router', () => {
                 'x-test': 'abc',
             });
         });
-    })
+    });
 });

@@ -71,7 +71,7 @@ export class Router {
             response.headers = {
                 // ...response.headers,
                 ...this.responseHeaderModifier(rawRequest.headers),
-            }
+            };
         }
 
         return response;
