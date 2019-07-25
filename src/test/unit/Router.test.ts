@@ -19,6 +19,7 @@ describe('Router', () => {
             const response = router.route({
                 method: 'POST',
                 path: '/path',
+                headers: {},
                 body: { a: 123 },
             });
 
@@ -68,6 +69,7 @@ describe('Router', () => {
                     await router.route({
                         method: 'POST',
                         path: '/path',
+                        headers: {},
                         body: undefined,
                     }),
                 ).toEqual(response);
@@ -83,6 +85,7 @@ describe('Router', () => {
                     await router.route({
                         method: 'POST',
                         path: '/path',
+                        headers: {},
                         body: undefined,
                     }),
                 ).toEqual({
@@ -103,6 +106,7 @@ describe('Router', () => {
                     await router.route({
                         method: 'POST',
                         path: '/path',
+                        headers: {},
                         body: undefined,
                     }),
                 ).toEqual({
@@ -140,6 +144,7 @@ describe('Router', () => {
             await router.route({
                 method: 'POST',
                 path: '/path',
+                headers: {},
                 body: undefined,
             });
 
@@ -156,6 +161,7 @@ describe('Router', () => {
             await router.route({
                 method: 'POST',
                 path: '/path',
+                headers: {},
                 body: undefined,
             });
 
@@ -172,6 +178,7 @@ describe('Router', () => {
             await router.route({
                 method: 'POST',
                 path: '/path',
+                headers: {},
                 body: undefined,
             });
 
@@ -180,4 +187,30 @@ describe('Router', () => {
             expect(handler3.isMatching).toHaveBeenCalledTimes(1);
         });
     });
+
+    describe('registerResponseHeaderModifier()', () => {
+        it('', async () => {
+            const router = new Router();
+            const handler = createMockInstance(Handler);
+
+            router.registerHandler(handler);
+
+            router.registerResponseHeaderModifier(() => {
+                return {
+                    'x-test': 'abc',
+                };
+            });
+
+            const response = await router.route({
+                method: 'GET',
+                path: '/path',
+                headers: {},
+                body: undefined,
+            });
+
+            expect(response.headers).toEqual({
+                'x-test': 'abc',
+            });
+        });
+    })
 });

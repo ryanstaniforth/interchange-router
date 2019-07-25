@@ -36,6 +36,7 @@ export class LambdaTransformer {
         const response = await this.router.route({
             method,
             path,
+            headers: {}, // TODO
             body,
         });
 

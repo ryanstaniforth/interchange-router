@@ -1,6 +1,11 @@
+export interface Headers {
+    [key: string]: string;
+}
+
 export interface RawRequest {
     method: string;
     path: string;
+    headers: Headers;
     body: unknown;
 }
 
@@ -14,5 +19,6 @@ export type PathParameterValidator = (value: string) => unknown;
 
 export interface Response {
     statusCode: number;
+    headers?: Headers;
     body: unknown;
 }

@@ -1,19 +1,28 @@
 import { HandlerNotFoundError, InvalidRequestBodyError, MethodNotSupportedError } from './errors';
 import { Handler } from './Handler';
 import { Request } from './Request';
-import { isMethod, RawRequest, Response } from './types';
+import { Headers, isMethod, RawRequest, Response } from './types';
 import { UrlPathComponents } from './UrlPathComponents';
+
+type ResponseHeaderModifier = (requestHeaders: Headers) => Headers;
 
 export class Router {
     private handlers: Array<Handler<any>> = [];
+    private responseHeaderModifier: ResponseHeaderModifier | undefined;
 
     public registerHandler(handler: Handler<any>): void {
         this.handlers.push(handler);
     }
 
+    public registerResponseHeaderModifier(modifier: ResponseHeaderModifier): void {
+        this.responseHeaderModifier = modifier;
+    }
+
     public async route(rawRequest: RawRequest): Promise<Response> {
+        let response: Response;
+
         try {
-            return await this.handleRequestErrors(async () => {
+            response = await this.handleRequestErrors(async () => {
                 if (!isMethod(rawRequest.method)) {
                     throw new MethodNotSupportedError(''); // TODO
                 }
@@ -35,28 +44,37 @@ export class Router {
             });
         } catch (error) {
             if (error instanceof HandlerNotFoundError) {
-                return {
+                response = {
                     statusCode: 404,
                     body: {
                         message: 'Not found.',
                     },
                 };
             } else if (error instanceof InvalidRequestBodyError) {
-                return {
+                response = {
                     statusCode: 400,
                     body: {
                         message: 'Invalid request.',
                     },
                 };
+            } else {
+                response = {
+                    statusCode: 500,
+                    body: {
+                        message: 'Internal error.',
+                    },
+                };
             }
-
-            return {
-                statusCode: 500,
-                body: {
-                    message: 'Internal error.',
-                },
-            };
         }
+
+        if (this.responseHeaderModifier !== undefined) {
+            response.headers = {
+                // ...response.headers,
+                ...this.responseHeaderModifier(rawRequest.headers),
+            }
+        }
+
+        return response;
     }
 
     protected async handleRequestErrors(

@@ -58,6 +58,7 @@ describe('LambdaTransformer', () => {
             expect(router.route).toBeCalledWith({
                 method: 'GET',
                 path: '/',
+                headers: {},
                 body: JSON.stringify(requestBody),
             });
         });

@@ -35,6 +35,7 @@ export class HttpTransformer {
         const response = await this.router.route({
             method,
             path,
+            headers: {}, // TODO
             body,
         });
 

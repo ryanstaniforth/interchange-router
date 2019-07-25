@@ -31,6 +31,7 @@ describe('HttpTransformer', () => {
                 expect(router.route).toBeCalledWith({
                     method: 'GET',
                     path: '/a',
+                    headers: {},
                     body: undefined,
                 });
 
@@ -62,6 +63,7 @@ describe('HttpTransformer', () => {
                 expect(router.route).toBeCalledWith({
                     method: 'GET',
                     path: '/a',
+                    headers: {},
                     body: undefined,
                 });
 
@@ -92,6 +94,7 @@ describe('HttpTransformer', () => {
                 expect(router.route).toBeCalledWith({
                     method: 'POST',
                     path: '/b',
+                    headers: {},
                     body,
                 });
 
