@@ -68,10 +68,10 @@ export class Router {
         }
 
         if (this.responseHeaderModifier !== undefined) {
-            response.headers = {
-                // ...response.headers,
+            response.headers = new Map([
+                ...(response.headers || []),
                 ...this.responseHeaderModifier(rawRequest.headers),
-            };
+            ]);
         }
 
         return response;

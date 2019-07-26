@@ -35,11 +35,17 @@ export class HttpTransformer {
         const response = await this.router.route({
             method,
             path,
-            headers: {}, // TODO
+            headers: new Map(), // TODO
             body,
         });
 
         res.statusCode = response.statusCode;
+
+        // if (response.headers) {
+        //     for (let key in response.headers) {
+        //         res.setHeader('');
+        //     }
+        // }
 
         if (response.body === undefined) {
             res.write('');

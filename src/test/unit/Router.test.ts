@@ -19,7 +19,7 @@ describe('Router', () => {
             const response = router.route({
                 method: 'POST',
                 path: '/path',
-                headers: {},
+                headers: new Map(),
                 body: { a: 123 },
             });
 
@@ -69,7 +69,7 @@ describe('Router', () => {
                     await router.route({
                         method: 'POST',
                         path: '/path',
-                        headers: {},
+                        headers: new Map(),
                         body: undefined,
                     }),
                 ).toEqual(response);
@@ -85,7 +85,7 @@ describe('Router', () => {
                     await router.route({
                         method: 'POST',
                         path: '/path',
-                        headers: {},
+                        headers: new Map(),
                         body: undefined,
                     }),
                 ).toEqual({
@@ -106,7 +106,7 @@ describe('Router', () => {
                     await router.route({
                         method: 'POST',
                         path: '/path',
-                        headers: {},
+                        headers: new Map(),
                         body: undefined,
                     }),
                 ).toEqual({
@@ -144,7 +144,7 @@ describe('Router', () => {
             await router.route({
                 method: 'POST',
                 path: '/path',
-                headers: {},
+                headers: new Map(),
                 body: undefined,
             });
 
@@ -161,7 +161,7 @@ describe('Router', () => {
             await router.route({
                 method: 'POST',
                 path: '/path',
-                headers: {},
+                headers: new Map(),
                 body: undefined,
             });
 
@@ -178,7 +178,7 @@ describe('Router', () => {
             await router.route({
                 method: 'POST',
                 path: '/path',
-                headers: {},
+                headers: new Map(),
                 body: undefined,
             });
 
@@ -196,21 +196,18 @@ describe('Router', () => {
             router.registerHandler(handler);
 
             router.registerResponseHeaderModifier(() => {
-                return {
-                    'x-test': 'abc',
-                };
+                return new Map([['x-test', 'abc']]);
             });
 
             const response = await router.route({
                 method: 'GET',
                 path: '/path',
-                headers: {},
+                headers: new Map(),
                 body: undefined,
             });
 
-            expect(response.headers).toEqual({
-                'x-test': 'abc',
-            });
+            expect(response.headers!.size).toBe(1);
+            expect(response.headers!.get('x-test')).toBe('abc');
         });
     });
 });

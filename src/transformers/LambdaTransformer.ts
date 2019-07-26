@@ -36,16 +36,23 @@ export class LambdaTransformer {
         const response = await this.router.route({
             method,
             path,
-            headers: {}, // TODO
+            headers: new Map(), // TODO
             body,
         });
+
+        if (!response.headers) {
+            response.headers = new Map();
+        }
+
+        response.headers.set('Content-Type', 'application/json');
 
         return {
             statusCode: response.statusCode,
             statusDescription: http.STATUS_CODES[response.statusCode] || '',
-            headers: {
-                'Content-Type': 'application/json',
-            },
+            headers: Array.from(response.headers).reduce((previous, current) => {
+                (previous as any)[current[0]] = current[1];
+                return previous;
+            }, {}),
             body: response.body === undefined ? '' : JSON.stringify(response.body),
             isBase64Encoded: false,
         };

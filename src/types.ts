@@ -1,6 +1,4 @@
-export interface Headers {
-    [key: string]: string;
-}
+export type Headers = Map<string, string>;
 
 export interface RawRequest {
     method: string;
