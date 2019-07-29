@@ -59,7 +59,7 @@ describe('LambdaTransformer', () => {
                 method: 'GET',
                 path: '/',
                 headers: new Map(),
-                body: JSON.stringify(requestBody),
+                body: requestBody,
             });
         });
     });

@@ -27,8 +27,8 @@ export class LambdaTransformer {
 
         if (typeof event.body === 'string') {
             body = event.isBase64Encoded
-                ? new Buffer(event.body, 'base64').toString('ascii')
-                : event.body;
+                ? JSON.parse(new Buffer(event.body, 'base64').toString('ascii'))
+                : JSON.parse(event.body);
         }
 
         const { httpMethod: method, path } = event;
