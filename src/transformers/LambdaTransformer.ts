@@ -23,20 +23,14 @@ export class LambdaTransformer {
     }
 
     private async handleEvent(event: ALBEvent, _: Context): Promise<ALBResult> {
-        let body: string | undefined;
-
-        if (typeof event.body === 'string') {
-            body = event.isBase64Encoded
-                ? JSON.parse(new Buffer(event.body, 'base64').toString('ascii'))
-                : JSON.parse(event.body);
-        }
-
         const { httpMethod: method, path } = event;
+        const headers = this.getHeaders(event);
+        const body = this.getRequestJson(event);
 
         const response = await this.router.route({
             method,
             path,
-            headers: new Map(), // TODO
+            headers,
             body,
         });
 
@@ -56,5 +50,46 @@ export class LambdaTransformer {
             body: response.body === undefined ? '' : JSON.stringify(response.body),
             isBase64Encoded: false,
         };
+    }
+
+    private getHeaders(event: ALBEvent): Map<string, string> {
+        const headers = new Map();
+
+        if (event.headers) {
+            for (const key in event.headers) {
+                if (event.headers.hasOwnProperty(key)) {
+                    headers.set(key, event.headers[key]);
+                }
+            }
+        }
+
+        if (event.multiValueHeaders) {
+            for (const key in event.multiValueHeaders) {
+                if (event.multiValueHeaders.hasOwnProperty(key)) {
+                    headers.set(key, event.multiValueHeaders[key]);
+                }
+            }
+        }
+
+        return headers;
+    }
+
+    private getRequestJson(event: ALBEvent): unknown {
+        const { isBase64Encoded } = event;
+        let { body } = event;
+
+        if (typeof body !== 'string') {
+            return undefined;
+        }
+
+        if (isBase64Encoded) {
+            body = new Buffer(body, 'base64').toString('ascii');
+        }
+
+        try {
+            return JSON.parse(body);
+        } catch (error) {
+            return undefined;
+        }
     }
 }
