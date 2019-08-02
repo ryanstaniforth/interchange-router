@@ -41,8 +41,8 @@ export class LambdaTransformer {
         response.headers.set('Content-Type', 'application/json');
 
         return {
-            statusCode: response.statusCode,
-            statusDescription: http.STATUS_CODES[response.statusCode] || '',
+            statusCode: response.status,
+            statusDescription: http.STATUS_CODES[response.status] || '',
             headers: Array.from(response.headers).reduce((previous, current) => {
                 (previous as any)[current[0]] = current[1];
                 return previous;

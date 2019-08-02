@@ -1,8 +1,7 @@
-import { InvalidRequestBodyError } from '../../errors';
+import { ApplicationError } from '../../errors';
 import { Handler } from '../../Handler';
-import { Request } from '../../Request';
 import { Router } from '../../Router';
-import { Response } from '../../types';
+import { RouterRequest, RouterResponse } from '../../types';
 import { UrlPathComponents } from '../../UrlPathComponents';
 import { createMockInstance } from '../helpers';
 
@@ -24,7 +23,8 @@ describe('Router', () => {
             });
 
             expect(response).resolves.toEqual({
-                statusCode: 404,
+                status: 404,
+                headers: new Map(),
                 body: {
                     message: 'Not found.',
                 },
@@ -32,10 +32,9 @@ describe('Router', () => {
 
             expect(handler.isMatching).toHaveBeenCalledTimes(1);
 
-            expect(handler.isMatching.mock.calls[0][0]).toBeInstanceOf(Request);
-            expect((handler.isMatching.mock.calls[0][0] as Request).method).toBe('POST');
-            expect((handler.isMatching.mock.calls[0][0] as Request).path).toBe('/path');
-            expect((handler.isMatching.mock.calls[0][0] as Request).body).toEqual({ a: 123 });
+            expect((handler.isMatching.mock.calls[0][0] as RouterRequest).method).toBe('POST');
+            expect((handler.isMatching.mock.calls[0][0] as RouterRequest).path).toBe('/path');
+            expect((handler.isMatching.mock.calls[0][0] as RouterRequest).body).toEqual({ a: 123 });
 
             expect(handler.isMatching.mock.calls[0][1]).toBeInstanceOf(UrlPathComponents);
             expect((handler.isMatching.mock.calls[0][1] as UrlPathComponents).components).toEqual([
@@ -55,8 +54,9 @@ describe('Router', () => {
             });
 
             it('should return given response', async () => {
-                const response: Response = {
-                    statusCode: 200,
+                const response: RouterResponse = {
+                    status: 200,
+                    headers: new Map(),
                     body: {
                         success: true,
                     },
@@ -78,7 +78,7 @@ describe('Router', () => {
             it('should handle invalid request body', async () => {
                 handler.isMatching.mockReturnValue(true);
                 handler.handleRequest.mockImplementation(async () => {
-                    throw new InvalidRequestBodyError('');
+                    throw new ApplicationError(400, 'Invalid request.')
                 });
 
                 expect(
@@ -89,7 +89,8 @@ describe('Router', () => {
                         body: undefined,
                     }),
                 ).toEqual({
-                    statusCode: 400,
+                    status: 400,
+                    headers: new Map(),
                     body: {
                         message: 'Invalid request.',
                     },
@@ -110,7 +111,8 @@ describe('Router', () => {
                         body: undefined,
                     }),
                 ).toEqual({
-                    statusCode: 500,
+                    status: 500,
+                    headers: new Map(),
                     body: {
                         message: 'Internal error.',
                     },
@@ -130,6 +132,16 @@ describe('Router', () => {
             handler1 = createMockInstance(Handler);
             handler2 = createMockInstance(Handler);
             handler3 = createMockInstance(Handler);
+
+            handler1.handleRequest.mockReturnValue(Promise.resolve({
+                status: 200,
+            }));
+            handler2.handleRequest.mockReturnValue(Promise.resolve({
+                status: 200,
+            }));
+            handler3.handleRequest.mockReturnValue(Promise.resolve({
+                status: 200,
+            }));
 
             router.registerHandler(handler1);
             router.registerHandler(handler2);

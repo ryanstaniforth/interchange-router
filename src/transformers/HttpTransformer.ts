@@ -39,7 +39,7 @@ export class HttpTransformer {
             body,
         });
 
-        res.statusCode = response.statusCode;
+        res.statusCode = response.status;
 
         // if (response.headers) {
         //     for (let key in response.headers) {

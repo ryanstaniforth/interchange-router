@@ -17,7 +17,8 @@ describe('HttpTransformer', () => {
         it('should handle router response', (done) => {
             router.route.mockImplementation(async () => {
                 return {
-                    statusCode: 200,
+                    status: 200,
+                    headers: new Map(),
                     body: {
                         success: true,
                     },
@@ -51,7 +52,8 @@ describe('HttpTransformer', () => {
         it('should handle an undefined body', (done) => {
             router.route.mockImplementation(async () => {
                 return {
-                    statusCode: 200,
+                    status: 200,
+                    headers: new Map(),
                     body: undefined,
                 };
             });
@@ -79,7 +81,8 @@ describe('HttpTransformer', () => {
         it('should pass JSON request body onto router', (done) => {
             router.route.mockImplementation(async () => {
                 return {
-                    statusCode: 200,
+                    status: 200,
+                    headers: new Map(),
                     body: {
                         success: true,
                     },

@@ -1,4 +1,4 @@
-import { Handler, HttpTransformer, MatchableRoute, Response, Router } from '../..';
+import { ApplicationResponse, Handler, HttpTransformer, MatchableRoute, Router } from '../..';
 import { IncommingMessageMock, ServerResponseMock } from '../helpers';
 
 describe('http', () => {
@@ -33,9 +33,9 @@ describe('http', () => {
             router.registerHandler(
                 new Handler(
                     new MatchableRoute('GET', '/a', {}),
-                    (): Response => {
+                    (): ApplicationResponse => {
                         return {
-                            statusCode: 200,
+                            status: 200,
                             body: {
                                 a: 1,
                             },
@@ -47,9 +47,9 @@ describe('http', () => {
             router.registerHandler(
                 new Handler(
                     new MatchableRoute('GET', '/b', {}),
-                    (): Response => {
+                    (): ApplicationResponse => {
                         return {
-                            statusCode: 200,
+                            status: 200,
                             body: {
                                 b: 2,
                             },
@@ -61,9 +61,9 @@ describe('http', () => {
             router.registerHandler(
                 new Handler(
                     new MatchableRoute('GET', '/c', {}),
-                    (): Response => {
+                    (): ApplicationResponse => {
                         return {
-                            statusCode: 200,
+                            status: 200,
                             body: {
                                 c: 3,
                             },

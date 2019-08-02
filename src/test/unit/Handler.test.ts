@@ -1,8 +1,7 @@
 import { PathNotMatchingError } from '../../errors';
 import { Handler } from '../../Handler';
 import { MatchableRoute } from '../../MatchableRoute';
-import { Request } from '../../Request';
-import { Response } from '../../types';
+import { RouterRequest, RouterResponse } from '../../types';
 import { UrlPathComponents } from '../../UrlPathComponents';
 
 describe('Handler', () => {
@@ -12,9 +11,10 @@ describe('Handler', () => {
 
     const handler = new Handler(
         matchablePath,
-        (): Response => {
+        (): RouterResponse => {
             return {
-                statusCode: 200,
+                status: 200,
+                headers: new Map(),
                 body: {
                     success: true,
                 },
@@ -24,9 +24,10 @@ describe('Handler', () => {
 
     const asyncHandler = new Handler(
         matchablePath,
-        async (): Promise<Response> => {
+        async (): Promise<RouterResponse> => {
             return {
-                statusCode: 200,
+                status: 200,
+                headers: new Map(),
                 body: {
                     success: true,
                 },
@@ -35,12 +36,18 @@ describe('Handler', () => {
     );
 
     it('should match and handle request', async () => {
-        const request = new Request('GET', 'http://a/1', {});
+        const request: RouterRequest = {
+            method: 'GET',
+            path: '/a/1',
+            headers: new Map(),
+            body: {}
+        };
         const path = new UrlPathComponents('/a/1');
 
         expect(handler.isMatching(request, path)).toBe(true);
         expect(await handler.handleRequest(request, path)).toEqual({
-            statusCode: 200,
+            status: 200,
+            headers: new Map(),
             body: {
                 success: true,
             },
@@ -48,12 +55,18 @@ describe('Handler', () => {
     });
 
     it('should not match but still handle request', async () => {
-        const request = new Request('POST', 'http://a/1', {});
+        const request: RouterRequest = {
+            method: 'POST',
+            path: '/a/1',
+            headers: new Map(),
+            body: {}
+        };
         const path = new UrlPathComponents('/a/1');
 
         expect(handler.isMatching(request, path)).toBe(false);
         expect(await handler.handleRequest(request, path)).toEqual({
-            statusCode: 200,
+            status: 200,
+            headers: new Map(),
             body: {
                 success: true,
             },
@@ -61,7 +74,12 @@ describe('Handler', () => {
     });
 
     it('should not match or handle request', async () => {
-        const request = new Request('GET', 'http://b/1', {});
+        const request: RouterRequest = {
+            method: 'GET',
+            path: '/b/1',
+            headers: new Map(),
+            body: {},
+        };
         const path = new UrlPathComponents('/b/1');
 
         expect(handler.isMatching(request, path)).toBe(false);
@@ -69,11 +87,17 @@ describe('Handler', () => {
     });
 
     it('should await an async function', async () => {
-        const request = new Request('GET', 'http://a/1', {});
+        const request: RouterRequest = {
+            method: 'GET',
+            path: '/a/1',
+            headers: new Map(),
+            body: {},
+        };
         const path = new UrlPathComponents('/a/1');
 
         expect(await asyncHandler.handleRequest(request, path)).toEqual({
-            statusCode: 200,
+            status: 200,
+            headers: new Map(),
             body: {
                 success: true,
             },

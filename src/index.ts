@@ -1,10 +1,9 @@
 import * as errors from './errors';
 import { Handler } from './Handler';
 import { MatchableRoute } from './MatchableRoute';
-import { Request } from './Request';
 import { Router } from './Router';
 import { HttpTransformer, LambdaTransformer } from './transformers';
-import { Response } from './types';
+import { ApplicationResponse } from './types';
 import { UrlPathComponents } from './UrlPathComponents';
 
 export {
@@ -13,8 +12,7 @@ export {
     HttpTransformer,
     LambdaTransformer,
     MatchableRoute,
-    Request,
-    Response,
+    ApplicationResponse,
     Router,
     UrlPathComponents,
 };

@@ -33,7 +33,7 @@ export class MatchableRoute<
         }
     }
 
-    public isMethodAndPathMatching(method: Method, urlPathComponents: UrlPathComponents): boolean {
+    public isMethodAndPathMatching(method: string, urlPathComponents: UrlPathComponents): boolean {
         if (method !== this.method) {
             return false;
         }

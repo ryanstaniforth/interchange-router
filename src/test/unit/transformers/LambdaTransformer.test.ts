@@ -32,7 +32,8 @@ describe('LambdaTransformer', () => {
 
             router.route.mockImplementation(async () => {
                 return {
-                    statusCode: 200,
+                    status: 200,
+                    headers: new Map(),
                     body: responseBody,
                 };
             });
