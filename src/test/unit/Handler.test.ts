@@ -40,7 +40,7 @@ describe('Handler', () => {
             method: 'GET',
             path: '/a/1',
             headers: new Map(),
-            body: {}
+            body: {},
         };
         const path = new UrlPathComponents('/a/1');
 
@@ -59,7 +59,7 @@ describe('Handler', () => {
             method: 'POST',
             path: '/a/1',
             headers: new Map(),
-            body: {}
+            body: {},
         };
         const path = new UrlPathComponents('/a/1');
 

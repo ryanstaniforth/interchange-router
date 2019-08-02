@@ -15,7 +15,10 @@ export class Handler<Validators extends { [key: string]: PathParameterValidator 
         return this.matchableRoute.isMethodAndPathMatching(request.method, path);
     }
 
-    public async handleRequest(request: RouterRequest, path: UrlPathComponents): Promise<ApplicationResponse> {
+    public async handleRequest(
+        request: RouterRequest,
+        path: UrlPathComponents,
+    ): Promise<ApplicationResponse> {
         const parameters = this.matchableRoute.getParameters(path);
 
         return await this.handle(request, parameters);

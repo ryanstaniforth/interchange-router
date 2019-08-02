@@ -78,7 +78,7 @@ describe('Router', () => {
             it('should handle invalid request body', async () => {
                 handler.isMatching.mockReturnValue(true);
                 handler.handleRequest.mockImplementation(async () => {
-                    throw new ApplicationError(400, 'Invalid request.')
+                    throw new ApplicationError(400, 'Invalid request.');
                 });
 
                 expect(
@@ -133,15 +133,21 @@ describe('Router', () => {
             handler2 = createMockInstance(Handler);
             handler3 = createMockInstance(Handler);
 
-            handler1.handleRequest.mockReturnValue(Promise.resolve({
-                status: 200,
-            }));
-            handler2.handleRequest.mockReturnValue(Promise.resolve({
-                status: 200,
-            }));
-            handler3.handleRequest.mockReturnValue(Promise.resolve({
-                status: 200,
-            }));
+            handler1.handleRequest.mockReturnValue(
+                Promise.resolve({
+                    status: 200,
+                }),
+            );
+            handler2.handleRequest.mockReturnValue(
+                Promise.resolve({
+                    status: 200,
+                }),
+            );
+            handler3.handleRequest.mockReturnValue(
+                Promise.resolve({
+                    status: 200,
+                }),
+            );
 
             router.registerHandler(handler1);
             router.registerHandler(handler2);
