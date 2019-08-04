@@ -46,7 +46,8 @@ export class Router {
                     status: error.status,
                     headers: new Map(),
                     body: {
-                        message: error.errorMessage || STATUS_CODES[error.status] || STATUS_CODES[500],
+                        message:
+                            error.errorMessage || STATUS_CODES[error.status] || STATUS_CODES[500],
                     },
                 };
             } else {
