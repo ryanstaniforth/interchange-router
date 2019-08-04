@@ -14,6 +14,7 @@ export class HttpTransformer {
     public async requestListener(req: IncomingMessage, res: ServerResponse): Promise<void> {
         const { method } = req;
         const path = this.getPathFromRequestUrl(req.url);
+        const headers = this.getHeaders(req);
         const body = await this.getRequestJson(req);
 
         if (path === undefined) {
@@ -35,17 +36,15 @@ export class HttpTransformer {
         const response = await this.router.route({
             method,
             path,
-            headers: new Map(), // TODO
+            headers,
             body,
         });
 
         res.statusCode = response.status;
 
-        // if (response.headers) {
-        //     for (let key in response.headers) {
-        //         res.setHeader('');
-        //     }
-        // }
+        for (const [key, value] of response.headers.entries()) {
+            res.setHeader(key, value);
+        }
 
         if (response.body === undefined) {
             res.write('');
@@ -69,6 +68,18 @@ export class HttpTransformer {
         }
 
         return parseUrl(url).pathname;
+    }
+
+    private getHeaders(req: IncomingMessage): Map<string, string> {
+        const headers = new Map();
+
+        for (const key in req.headers) {
+            if (req.headers.hasOwnProperty(key)) {
+                headers.set(key, req.headers[key]);
+            }
+        }
+
+        return headers;
     }
 
     private async getRequestJson(req: IncomingMessage): Promise<unknown> {
