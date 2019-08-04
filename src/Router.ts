@@ -1,3 +1,4 @@
+import { STATUS_CODES } from 'http';
 import { ApplicationError, MethodNotSupportedError } from './errors';
 import { Handler } from './Handler';
 import { ApplicationResponse, Headers, isMethod, RouterRequest, RouterResponse } from './types';
@@ -45,7 +46,7 @@ export class Router {
                     status: error.status,
                     headers: new Map(),
                     body: {
-                        message: error.errorMessage,
+                        message: error.errorMessage || STATUS_CODES[error.status] || STATUS_CODES[500],
                     },
                 };
             } else {
@@ -53,7 +54,7 @@ export class Router {
                     status: 500,
                     headers: new Map(),
                     body: {
-                        message: 'Internal error.',
+                        message: STATUS_CODES[500],
                     },
                 };
             }
