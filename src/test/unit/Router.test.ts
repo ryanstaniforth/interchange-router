@@ -114,7 +114,7 @@ describe('Router', () => {
                     status: 500,
                     headers: new Map(),
                     body: {
-                        message: 'Internal error.',
+                        message: 'Internal Server Error',
                     },
                 });
             });
