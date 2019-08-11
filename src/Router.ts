@@ -6,9 +6,12 @@ import { UrlPathComponents } from './UrlPathComponents';
 
 type ResponseHeaderModifier = (requestHeaders: Headers) => Headers;
 
+type CorsHandler = (origin: string) => { valid: boolean };
+
 export class Router {
     private handlers: Array<Handler<any>> = [];
     private responseHeaderModifier: ResponseHeaderModifier | undefined;
+    private corsHandler: CorsHandler | undefined;
 
     public registerHandler(handler: Handler<any>): void {
         this.handlers.push(handler);
@@ -18,12 +21,22 @@ export class Router {
         this.responseHeaderModifier = modifier;
     }
 
+    public registerCorsHandler(corsVerifier: CorsHandler): void {
+        this.corsHandler = corsVerifier;
+    }
+
     public async route(request: RouterRequest): Promise<RouterResponse> {
         let response: ApplicationResponse;
 
         try {
             response = await this.handleRequestErrors(async () => {
                 const { method, path } = request;
+
+                if (method === 'OPTIONS') {
+                    return {
+                        status: 200,
+                    };
+                }
 
                 if (!isMethod(method)) {
                     throw new MethodNotSupportedError();
@@ -58,6 +71,24 @@ export class Router {
                         message: STATUS_CODES[500],
                     },
                 };
+            }
+        }
+
+        if (this.corsHandler) {
+            const origin = request.headers.get('origin');
+
+            if (typeof origin === 'string') {
+                const cors = this.corsHandler(origin);
+                const corsHeaders = new Map();
+
+                if (cors.valid) {
+                    corsHeaders.set('access-control-allow-origin', origin);
+                }
+
+                response.headers = new Map([
+                    ...(response.headers || []),
+                    ...corsHeaders,
+                ]);
             }
         }
 

@@ -206,6 +206,57 @@ describe('Router', () => {
         });
     });
 
+    describe('registerCorsHandler()', () => {
+        it('', async () => {
+            const router = new Router();
+            const handler = createMockInstance(Handler);
+
+            router.registerHandler(handler);
+
+            router.registerCorsHandler((origin) => {
+                return {
+                    valid: origin === 'good',
+                }
+            });
+
+            const response = await router.route({
+                method: 'GET',
+                path: '/path',
+                headers: new Map([
+                    ['origin', 'good'],
+                ]),
+                body: undefined,
+            });
+
+            expect(response.headers!.size).toBe(1);
+            expect(response.headers!.get('access-control-allow-origin')).toBe('good');
+        });
+
+        it('', async () => {
+            const router = new Router();
+            const handler = createMockInstance(Handler);
+
+            router.registerHandler(handler);
+
+            router.registerCorsHandler((origin) => {
+                return {
+                    valid: origin === 'good',
+                }
+            });
+
+            const response = await router.route({
+                method: 'GET',
+                path: '/path',
+                headers: new Map([
+                    ['origin', 'bad'],
+                ]),
+                body: undefined,
+            });
+
+            expect(response.headers!.size).toBe(0);
+        });
+    });
+
     describe('registerResponseHeaderModifier()', () => {
         it('', async () => {
             const router = new Router();
