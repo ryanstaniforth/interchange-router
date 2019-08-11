@@ -85,10 +85,7 @@ export class Router {
                     corsHeaders.set('access-control-allow-origin', origin);
                 }
 
-                response.headers = new Map([
-                    ...(response.headers || []),
-                    ...corsHeaders,
-                ]);
+                response.headers = new Map([...(response.headers || []), ...corsHeaders]);
             }
         }
 

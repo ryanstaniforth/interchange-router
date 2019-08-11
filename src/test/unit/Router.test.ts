@@ -216,15 +216,13 @@ describe('Router', () => {
             router.registerCorsHandler((origin) => {
                 return {
                     valid: origin === 'good',
-                }
+                };
             });
 
             const response = await router.route({
                 method: 'GET',
                 path: '/path',
-                headers: new Map([
-                    ['origin', 'good'],
-                ]),
+                headers: new Map([['origin', 'good']]),
                 body: undefined,
             });
 
@@ -241,15 +239,13 @@ describe('Router', () => {
             router.registerCorsHandler((origin) => {
                 return {
                     valid: origin === 'good',
-                }
+                };
             });
 
             const response = await router.route({
                 method: 'GET',
                 path: '/path',
-                headers: new Map([
-                    ['origin', 'bad'],
-                ]),
+                headers: new Map([['origin', 'bad']]),
                 body: undefined,
             });
 
