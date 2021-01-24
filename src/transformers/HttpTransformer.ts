@@ -1,5 +1,5 @@
 import { IncomingMessage, ServerResponse } from 'http';
-import { parse as parseUrl } from 'url';
+import { URL } from 'url';
 import { Router } from '../Router';
 
 const INTERNAL_ERROR_MESSAGE = JSON.stringify({
@@ -67,7 +67,7 @@ export class HttpTransformer {
             return undefined;
         }
 
-        return parseUrl(url).pathname;
+        return new URL(url, 'https://example.com').pathname;
     }
 
     private getHeaders(req: IncomingMessage): Map<string, string> {

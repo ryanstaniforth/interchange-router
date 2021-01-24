@@ -9,7 +9,7 @@ type ResponseHeaderModifier = (requestHeaders: Headers) => Headers;
 type CorsHandler = (origin: string) => { valid: boolean };
 
 export class Router {
-    private handlers: Array<Handler<any>> = [];
+    private handlers: Handler<any>[] = [];
     private responseHeaderModifier: ResponseHeaderModifier | undefined;
     private corsHandler: CorsHandler | undefined;
 
